@@ -103,7 +103,6 @@ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.old
 sed -i 's%#Port 22%Port 26345%' /etc/ssh/sshd_config
 sed -i 's%#PermitEmptyPasswords no%PermitEmptyPasswords no%' /etc/ssh/sshd_config
 sed -i 's%#UseDNS yes%UseDNS no%' /etc/ssh/sshd_config
-firewall-cmd --add-port=26345/tcp --permanent 
 yum -y install policycoreutils-python
 semanage port -a -t ssh_port_t -p tcp 26345
 egrep "UseDNS|26345|EmptyPass" /etc/ssh/sshd_config >> $LOG_FILE
