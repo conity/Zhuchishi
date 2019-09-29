@@ -106,6 +106,7 @@ sed -i 's%#UseDNS yes%UseDNS no%' /etc/ssh/sshd_config
 yum -y install policycoreutils-python
 semanage port -a -t ssh_port_t -p tcp 26345
 egrep "UseDNS|26345|EmptyPass" /etc/ssh/sshd_config >> $LOG_FILE
+service sshd restart
 
 
 VPN_IP=`curl ipv4.icanhazip.com`
