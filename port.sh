@@ -111,8 +111,8 @@ systemctl start rc-local >/dev/null 2>&1
     sleep 3
     echo
     echo -e "${Green}tinyPortMapper安装并配置成功!${Font}"
-    echo -e "${Blue}你的本地端口为:${port1}${Font}"
-    echo -e "${Blue}你的远程端口为:${port2}${Font}"
+    echo -e "${Blue}你的轉發後端口为:${port1}${Font}"
+    echo -e "${Blue}你的需要轉發端口为:${port2}${Font}"
     echo -e "${Blue}你的本地服务器IP为:${ip}${Font}"
     exit 0
 }
