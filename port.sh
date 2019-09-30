@@ -53,8 +53,8 @@ get_ip(){
 
 config_tinyPortMapper(){
     echo -e "${Green}请输入tinyPortMapper配置信息！${Font}"
-    read -p "请输入本地端口:" port1
-    read -p "请输入远程端口:" port2
+    read -p "请输入需要轉發的端口:" port2
+    read -p "请输入轉發後的端口:" port1
     read -p "请输入远程IP:" tinyPortMapperip
 }
 
