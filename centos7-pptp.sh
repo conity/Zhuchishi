@@ -1,3 +1,7 @@
+Green="\033[32m"
+Font="\033[0m"
+Blue="\033[33m"
+
 printhelp() {
 
 echo "
@@ -78,17 +82,22 @@ END
 
 ETH=`route | grep default | awk '{print $NF}'`
 
+echo -e "${Green}转发配置信息！${Font}"
+read -p "请输入${Blue}接收${Font}端口:" port1
+read -p "请输入${Blue}转出${Font}端口:" port2
+read -p "请输入${Blue}SSH${Font}端口:" port3
+
 systemctl restart firewalld.service
 systemctl enable firewalld.service
 firewall-cmd --set-default-zone=public
 firewall-cmd --add-interface=$ETH
-firewall-cmd --add-port=26345/tcp --permanent
-firewall-cmd --add-port=443/tcp --permanent
-firewall-cmd --add-port=10000/tcp --permanent
+firewall-cmd --add-port=${port3}/tcp --permanent
+firewall-cmd --add-port=${port1}/tcp --permanent
+firewall-cmd --add-port=${port2}/tcp --permanent
 firewall-cmd --add-port=1723/tcp --permanent
 firewall-cmd --add-masquerade --permanent
 firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $ETH -p gre -j ACCEPT
-firewall-cmd --add-forward-port=port=443:proto=tcp:toport=10000:toaddr=192.168.10.1 --permanent
+firewall-cmd --add-forward-port=port=${port1}:proto=tcp:toport=${port2}:toaddr=192.168.10.1 --permanent
 firewall-cmd --reload
 
 cat > /etc/ppp/ip-up.local << END
@@ -100,12 +109,12 @@ systemctl enable pptpd.service
 
 
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.old
-sed -i 's%#Port 22%Port 26345%' /etc/ssh/sshd_config
+sed -i 's%#Port 22%Port ${port3}%' /etc/ssh/sshd_config
 sed -i 's%#PermitEmptyPasswords no%PermitEmptyPasswords no%' /etc/ssh/sshd_config
 sed -i 's%#UseDNS yes%UseDNS no%' /etc/ssh/sshd_config
 yum -y install policycoreutils-python
-semanage port -a -t ssh_port_t -p tcp 26345
-egrep "UseDNS|26345|EmptyPass" /etc/ssh/sshd_config >> $LOG_FILE
+semanage port -a -t ssh_port_t -p tcp ${port3}
+egrep "UseDNS|${port3}|EmptyPass" /etc/ssh/sshd_config >> $LOG_FILE
 service sshd restart
 
 
@@ -114,5 +123,5 @@ clear
 echo -e "You can now connect to your VPN via your external IP \033[32m${VPN_IP}\033[0m"
 echo -e "Username: \033[32m${NAME}\033[0m"
 echo -e "Password: \033[32m${PASS}\033[0m"
-echo -e "转发已经配好 443 转 10000 端口"
-echo -e "SSH端口已变更为26345"
+echo -e "转发已经配好${port1}转${port2}端口"
+echo -e "SSH端口已变更为${port3}"
