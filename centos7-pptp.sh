@@ -83,9 +83,9 @@ END
 ETH=`route | grep default | awk '{print $NF}'`
 
 echo -e "${Green}转发配置信息！${Font}"
-read -p "请输入${Blue}接收${Font}端口:" port1
-read -p "请输入${Blue}转出${Font}端口:" port2
-read -p "请输入${Blue}SSH${Font}端口:" port3
+read -p "${Blue}请输入接收端口:${Font}" port1
+read -p "${Blue}请输入转出端口:${Font}" port2
+read -p "${Blue}请输入SSH端口:${Font}" port3
 
 systemctl restart firewalld.service
 systemctl enable firewalld.service
