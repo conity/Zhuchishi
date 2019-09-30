@@ -115,4 +115,4 @@ echo -e "You can now connect to your VPN via your external IP \033[32m${VPN_IP}\
 echo -e "Username: \033[32m${NAME}\033[0m"
 echo -e "Password: \033[32m${PASS}\033[0m"
 echo -e "转发已经配好 443 转 10000 端口"
-echo -e "SSH端口已变更为26345,重启生效"
+echo -e "SSH端口已变更为26345"
