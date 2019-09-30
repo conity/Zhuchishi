@@ -20,7 +20,7 @@ chmod +x ./centos7.sh
 
 **单纯端口轉發**
 
-支持`CentOS 6+` 、`Debian 7+`、`Ubuntu 14+`
+支持`CentOS 7+`
 ```
 wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh 
 ```
