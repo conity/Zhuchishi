@@ -7,29 +7,8 @@ Blue="\033[33m"
 
 rootness(){
     if [[ $EUID -ne 0 ]]; then
-       echo "Error:This script must be run as root!" 1>&2
+       echo "Error:此脚本需以root权限运行!" 1>&2
        exit 1
-    fi
-}
-
-checkos(){
-    if [[ -f /etc/redhat-release ]];then
-        OS=CentOS
-    elif cat /etc/issue | grep -q -E -i "debian";then
-        OS=Debian
-    elif cat /etc/issue | grep -q -E -i "ubuntu";then
-        OS=Ubuntu
-    elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat";then
-        OS=CentOS
-    elif cat /proc/version | grep -q -E -i "debian";then
-        OS=Debian
-    elif cat /proc/version | grep -q -E -i "ubuntu";then
-        OS=Ubuntu
-    elif cat /proc/version | grep -q -E -i "centos|red hat|redhat";then
-        OS=CentOS
-    else
-        echo "Not supported OS, Please reinstall OS and try again."
-        exit 1
     fi
 }
 
@@ -40,11 +19,17 @@ disable_selinux(){
     fi
 }
 
-disable_iptables(){
-    systemctl stop firewalld.service >/dev/null 2>&1
-    systemctl disable firewalld.service >/dev/null 2>&1
-    service iptables stop >/dev/null 2>&1
-    chkconfig iptables off >/dev/null 2>&1
+firewall(){
+    yum -y install firewalld
+    systemctl restart firewalld.service
+    systemctl enable firewalld.service
+    firewall-cmd --set-default-zone=public
+    firewall-cmd --add-interface=$ETH
+    firewall-cmd --add-port=${port1}/tcp --permanent
+    firewall-cmd --add-port=${port2}/tcp --permanent
+    firewall-cmd --add-masquerade --permanent
+    firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -i $ETH -p gre -j ACCEPT
+    firewall-cmd --reload
 }
 
 get_ip(){
@@ -52,14 +37,14 @@ get_ip(){
 }
 
 config_tinyPortMapper(){
-    echo -e "${Green}请输入tinyPortMapper配置信息！${Font}"
-    read -p "请输入需要轉發的端口:" port2
-    read -p "请输入轉發後的端口:" port1
+    echo -e "${Green}转发配置信息！${Font}"
+    read -p "请输入接收端口:" port1
+    read -p "请输入转出端口:" port2
     read -p "请输入远程IP:" tinyPortMapperip
 }
 
 start_tinyPortMapper(){
-    echo -e "${Green}正在配置tinyPortMapper...${Font}"
+    echo -e "${Green}正在配置转发...${Font}"
     nohup /tinyPortMapper/tinymapper -l 0.0.0.0:${port1} -r ${tinyPortMapperip}:${port2} -t -u > /root/tinymapper.log 2>&1 &
     if [ "${OS}" == 'CentOS' ];then
         sed -i '/exit/d' /etc/rc.d/rc.local
@@ -111,17 +96,17 @@ systemctl start rc-local >/dev/null 2>&1
     sleep 3
     echo
     echo -e "${Green}tinyPortMapper安装并配置成功!${Font}"
-    echo -e "${Blue}你的轉發後端口为:${port1}${Font}"
-    echo -e "${Blue}你的需要轉發端口为:${port2}${Font}"
-    echo -e "${Blue}你的本地服务器IP为:${ip}${Font}"
+    echo -e "${Blue}你的接收端口为:${port1}${Font}"
+    echo -e "${Blue}你的转出端口为:${port2}${Font}"
+    echo -e "${Blue}你的服务器IP为:${ip}${Font}"
     exit 0
 }
 
 install_tinyPortMapper(){
-echo -e "${Green}即将安装tinyPortMapper...${Font}"
-#下载tinyPortMapper
+echo -e "${Green}即将安装端口转发...${Font}"
+#下载
 wget -N --no-check-certificate "https://github.com/wangyu-/tinyPortMapper/releases/download/20180224.0/tinymapper_binaries.tar.gz"
-#解压tinyPortMapper
+#解压
 tar -xzf tinymapper_binaries.tar.gz
 mkdir /tinyPortMapper
 KernelBit="$(getconf LONG_BIT)"
@@ -151,21 +136,19 @@ status_tinyPortMapper(){
 }
 
 main_x(){
-checkos
 rootness
 disable_selinux
-disable_iptables
 config_tinyPortMapper
+firewall
 start_tinyPortMapper
 }
 
 main_y(){
-checkos
 rootness
 disable_selinux
-disable_iptables
 install_tinyPortMapper
 config_tinyPortMapper
+firewall
 start_tinyPortMapper
 }
 
