@@ -1,4 +1,4 @@
-#一鍵腳本庫
+# 一鍵腳本庫
 ------------------
 **pptp轉發一套**
 
@@ -22,5 +22,5 @@ chmod +x ./centos7.sh
 
 支持`CentOS 6+` 、`Debian 7+`、`Ubuntu 14+`
 ```
-wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash tinyPortMapper.sh 
+wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh 
 ```
