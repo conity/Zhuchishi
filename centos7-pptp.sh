@@ -82,14 +82,13 @@ END
 
 ETH=`route | grep default | awk '{print $NF}'`
 
-echo -e "${Green}转发配置信息！${Font}"
-read -p "${Blue}请输入接收端口:${Font}" port1
-read -p "${Blue}请输入转出端口:${Font}" port2
-read -p "${Blue}请输入SSH端口:${Font}" port3
+echo -e "\033[32m转发配置信息！\033[0m"
+read -p "\033[32m请输入接收端口：\033[0m" port1
+read -p "\033[32m请输入转出端口：\033[0m" port2
+read -p "\033[32m请输入SSH端口：\033[0m" port3
 
 systemctl restart firewalld.service
 systemctl enable firewalld.service
-firewall-cmd --set-default-zone=public
 firewall-cmd --add-interface=$ETH
 firewall-cmd --add-port=${port3}/tcp --permanent
 firewall-cmd --add-port=${port1}/tcp --permanent
