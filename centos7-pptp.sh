@@ -83,9 +83,9 @@ END
 ETH=`route | grep default | awk '{print $NF}'`
 
 echo -e "\033[32m转发配置信息！\033[0m"
-read -p "\033[32m请输入接收端口：\033[0m" port1
-read -p "\033[32m请输入转出端口：\033[0m" port2
-read -p "\033[32m请输入SSH端口：\033[0m" port3
+read -p "请输入接收端口：" port1
+read -p "请输入转出端口：" port2
+read -p "请输入重设的SSH端口：" port3
 
 systemctl restart firewalld.service
 systemctl enable firewalld.service
@@ -108,7 +108,7 @@ systemctl enable pptpd.service
 
 
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.old
-sed -i 's%#Port 22%Port ${port3}%' /etc/ssh/sshd_config
+sed -i 's%#Port 22%Port '${port3}%'' /etc/ssh/sshd_config
 sed -i 's%#PermitEmptyPasswords no%PermitEmptyPasswords no%' /etc/ssh/sshd_config
 sed -i 's%#UseDNS yes%UseDNS no%' /etc/ssh/sshd_config
 yum -y install policycoreutils-python
