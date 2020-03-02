@@ -18,18 +18,10 @@ chmod +x ./centos7.sh
 ./centos7.sh -u your_username -p your_password
 ```
 
-**单纯端口轉發**
+**ssh密鑰登錄**
 
-支持`CentOS 7+`
 ```
 wget https://raw.githubusercontent.com/conity/Zhuchishi/master/key.sh
 chmod +x key.sh
 ./key.sh
 ```
-
-**ssh密鑰登錄**
-```
-wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh 
-```
-
-
