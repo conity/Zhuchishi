@@ -24,3 +24,10 @@ chmod +x ./centos7.sh
 ```
 wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh 
 ```
+
+**ssh密鑰登錄**
+```
+wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh 
+```
+
+
