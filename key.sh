@@ -1,10 +1,7 @@
 #/bin/sh
 apt-get update -y
-apt-get install curl -y
 yum clean all
-yum make cache
-yum install curl -y
-
+yum install firewalld -y 
 cd ~
 
 mkdir .ssh
@@ -17,6 +14,11 @@ chmod 600 .ssh
 cd /etc/ssh/
 
 read -p "請輸入重設的SSH端口：" port3
+systemctl restart firewalld.service
+systemctl enable firewalld.service
+firewall-cmd --add-interface=$ETH
+firewall-cmd --add-port=${port3}/tcp --permanen
+firewall-cmd --reload
 
 sed -i "/PasswordAuthentication no/c PasswordAuthentication no" sshd_config
 sed -i "/RSAAuthentication no/c RSAAuthentication yes" sshd_config
