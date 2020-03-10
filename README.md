@@ -25,3 +25,7 @@ wget https://raw.githubusercontent.com/conity/Zhuchishi/master/key.sh
 chmod +x key.sh
 ./key.sh
 ```
+**轉發**
+```
+wget https://raw.githubusercontent.com/conity/Zhuchishi/master/port.sh && bash port.sh
+```
