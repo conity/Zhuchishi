@@ -19,6 +19,17 @@ disable_selinux(){
     fi
 }
 
+get_ip(){
+    ip=`curl http://whatismyip.akamai.com`
+}
+
+config_tinyPortMapper(){
+    echo -e "${Green}转发配置信息！${Font}"
+    read -p "请输入接收端口:" port1
+    read -p "请输入转出端口:" port2
+    read -p "请输入远程IP:" tinyPortMapperip
+}
+
 firewall(){
     yum -y install firewalld
     systemctl restart firewalld.service
@@ -32,16 +43,6 @@ firewall(){
     firewall-cmd --reload
 }
 
-get_ip(){
-    ip=`curl http://whatismyip.akamai.com`
-}
-
-config_tinyPortMapper(){
-    echo -e "${Green}转发配置信息！${Font}"
-    read -p "请输入接收端口:" port1
-    read -p "请输入转出端口:" port2
-    read -p "请输入远程IP:" tinyPortMapperip
-}
 
 start_tinyPortMapper(){
     echo -e "${Green}正在配置转发...${Font}"
