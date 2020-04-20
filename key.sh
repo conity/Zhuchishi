@@ -15,26 +15,20 @@ cd /etc/ssh/
 
 read -p "請輸入重設的SSH端口：" port3
 systemctl restart firewalld.service
-systemctl enable firewalld.service
-firewall-cmd --add-interface=$ETH
 firewall-cmd --add-port=${port3}/tcp --permanen
 firewall-cmd --reload
 
-sed -i "/PasswordAuthentication no/c PasswordAuthentication no" sshd_config
-sed -i "/RSAAuthentication no/c RSAAuthentication yes" sshd_config
-sed -i "/PubkeyAuthentication no/c PubkeyAuthentication yes" sshd_config
-sed -i "/PasswordAuthentication yes/c PasswordAuthentication no" sshd_config
-sed -i "/RSAAuthentication yes/c RSAAuthentication yes" sshd_config
-sed -i "/PubkeyAuthentication yes/c PubkeyAuthentication yes" sshd_config
-sed -i 's%#Port 22%Port '${port3}%'' /etc/ssh/sshd_config
-sed -i 's%#PermitEmptyPasswords no%PermitEmptyPasswords no%' /etc/ssh/sshd_config
-sed -i 's%#UseDNS yes%UseDNS no%' /etc/ssh/sshd_config
-yum -y install policycoreutils-python
-semanage port -a -t ssh_port_t -p tcp ${port3}
-egrep "UseDNS|${port3}|EmptyPass" /etc/ssh/sshd_config >> $LOG_FILE
-service sshd restart
-service ssh restart
-systemctl restart sshd
-systemctl restart ssh
+#启用证书登陆
+sed -i 's:#AuthorizedKeysFile:AuthorizedKeysFile:'  /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthenticati yes/PasswordAuthentication no/'  /etc/ssh/sshd_config
+
+#以下两项不一定有，有就处理，也是证书登陆内容
+sed -i 's/#RSAAuthentication yes/RSAAuthentication yes/'  /etc/ssh/sshd_config
+sed -i 's/#StrictModes no/StrictModes no/'  /etc/ssh/sshd_config
+
+#如果要改端口，加入以下这行
+sed -i 's/#Port 22/Port '${port3}'/' /etc/ssh/sshd_config     
+
+systemctl restart sshd.service
 cd ~
 rm -rf key.sh
